@@ -14,9 +14,10 @@ def scrape_all():
         "news_paragraph": news_paragraph,
         "featured_image": featured_image(browser),
         "facts": mars_facts(),
-        "last_modified": dt.datetime.now()
-        }
-
+        "last_modified": dt.datetime.now(),
+        "hemisphere_info": hemisphere_info(browser)
+    }
+    
     # Stop webdriver and return data
     browser.quit()
     return data
@@ -98,6 +99,56 @@ def mars_facts():
 
     # Convert dataframe into HTML format, add bootstrap
     return df.to_html(classes="table table-striped")
+
+
+### hemisphere info
+
+def hemisphere_info(browser):
+    # 1. Use browser to visit the URL 
+    url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
+    browser.visit(url)
+
+    # 2. Create a list to hold the images and titles.
+    hemisphere_image_urls = []
+
+    # 3. Write code to retrieve the image urls and titles for each hemisphere.
+
+    # Parse the HTML
+    html = browser.html
+    test_soup = soup(html, 'html.parser')
+
+    # Establishing base link
+    base_url = 'https://astrogeology.usgs.gov'
+
+    # Using list comprehension to parse the HTML
+    list_comp = [base_url + div.find("a").get("href") for div in test_soup.find_all("div", class_="item")]
+
+    for link in list_comp:
+        browser.visit(link)
+
+        # Parse the HTML
+        html = browser.html
+        test_soup = soup(html, 'html.parser')
+
+        # Scrape the images
+        image = test_soup.find("div", class_="downloads")
+        image_links = image.find("a").get("href")
+
+        # Scrape the titles
+        titles = test_soup.find('h2').text
+
+        # Adding images and titles to list
+        hemisphere_image_urls.append({'img_url':image_links, 'title':titles})
+
+        # 4. Print the list that holds the dictionary of each image url and title.
+        hemisphere_image_urls
+
+        # 5. Quit the browser
+        browser.back()
+    
+    # Returning hemisphere_image_urls
+    return hemisphere_image_urls
+
 
 if __name__ == "__main__":
 
