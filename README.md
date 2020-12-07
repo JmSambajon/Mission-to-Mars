@@ -2,4 +2,5 @@
 
 ## Overview of this Project
 
-BeautifulSoup and Splinter is used to scrape facts about Mars, store the scraped data on a Mongo database, use a web application to display the data, and alter the design of the web app to accommodate these images.
+The purpose of this project is to automate a web browser to visit different websites to extract data about the Mission to Mars. The data is stored in a NoSQL database, and then render the data in a web application created with Flask. The completed work will be displayed in a portfolioo fmy creation
+
